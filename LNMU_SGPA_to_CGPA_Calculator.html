@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LNMU SGPA to CGPA Calculator</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f6ff;color:#172033}
+  .wrap{max-width:720px;margin:24px auto;padding:16px}
+  .card{background:#fff;border-radius:18px;padding:22px;box-shadow:0 8px 28px #17203318}
+  header{text-align:center;background:linear-gradient(135deg,#143a8b,#3877e8);color:#fff;padding:24px 16px;border-radius:16px;margin-bottom:18px}
+  h1{font-size:24px;margin:0 0 8px}
+  header p{margin:0;font-size:14px}
+  .note{background:#fff8df;border-left:4px solid #e8a800;padding:12px;border-radius:8px;font-size:13px;line-height:1.5;margin:14px 0}
+  label{display:block;font-weight:700;margin:12px 0 6px}
+  select,input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font-size:16px;background:#fff}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  button{border:0;border-radius:10px;padding:13px 16px;font-weight:700;font-size:16px;cursor:pointer}
+  .primary{background:#215bd6;color:#fff;width:100%;margin-top:18px}
+  .secondary{background:#e9efff;color:#1644a3;width:100%;margin-top:10px}
+  .result{display:none;text-align:center;margin-top:18px;background:#eaf8ef;border:1px solid #a8dfb8;border-radius:12px;padding:18px}
+  .result .big{font-size:32px;font-weight:800;color:#126b36}
+  .whatsapp{display:block;text-align:center;background:#168b50;color:white;text-decoration:none;padding:14px;border-radius:10px;font-weight:700;margin-top:20px}
+  .foot{text-align:center;font-size:12px;color:#64748b;margin-top:16px}
+  @media(max-width:480px){.wrap{padding:10px;margin:10px auto}.card{padding:16px}h1{font-size:21px}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>SGPA to CGPA Calculator</h1>
+    <p>LNMU Students ke liye simple calculator</p>
+  </header>
+  <div class="card">
+    <p>Apne har semester ka SGPA bhariye. Calculator entered semesters ka average CGPA estimate karega.</p>
+    <div class="note"><strong>Note:</strong> Yeh average-based estimate hai. University ke official CGPA calculation rules ya credit-weighted method alag ho sakte hain. Official result ke liye university ke rules ko final maanein.</div>
+    <label for="count">Kitne semesters ka SGPA add karna hai?</label>
+    <select id="count" onchange="renderFields()">
+      <option value="1">1 Semester</option><option value="2">2 Semesters</option>
+      <option value="3">3 Semesters</option><option value="4" selected>4 Semesters</option>
+      <option value="5">5 Semesters</option><option value="6">6 Semesters</option>
+      <option value="7">7 Semesters</option><option value="8">8 Semesters</option>
+    </select>
+    <div id="fields" class="grid"></div>
+    <button class="primary" onclick="calculate()">Calculate CGPA</button>
+    <button class="secondary" onclick="resetForm()">Reset</button>
+    <div id="result" class="result" aria-live="polite">
+      <div>Your Estimated CGPA</div><div id="cgpa" class="big">0.00</div>
+      <div id="details"></div>
+    </div>
+    <a class="whatsapp" href="https://whatsapp.com/channel/0029VakpAew6WaKmVp4P9p2t" target="_blank" rel="noopener">Join Our WhatsApp Channel</a>
+    <div class="foot">Student information tool • Please verify official university rules</div>
+  </div>
+</div>
+<script>
+function renderFields(){
+ const n=Number(document.getElementById('count').value), box=document.getElementById('fields');
+ box.innerHTML='';
+ for(let i=1;i<=n;i++){
+  const div=document.createElement('div');
+  div.innerHTML=`<label for="sgpa${i}">Semester ${i} SGPA</label><input id="sgpa${i}" type="number" min="0" max="10" step="0.01" placeholder="0.00 to 10.00" inputmode="decimal">`;
+  box.appendChild(div);
+ }
+ document.getElementById('result').style.display='none';
+}
+function calculate(){
+ const n=Number(document.getElementById('count').value), values=[];
+ for(let i=1;i<=n;i++){
+  const raw=document.getElementById('sgpa'+i).value.trim();
+  if(raw===''){alert('Please Semester '+i+' ka SGPA bhariye.');return;}
+  const v=Number(raw);
+  if(!Number.isFinite(v)||v<0||v>10){alert('SGPA 0 se 10 ke beech hona chahiye.');return;}
+  values.push(v);
+ }
+ const total=values.reduce((a,b)=>a+b,0), cgpa=total/values.length;
+ document.getElementById('cgpa').textContent=cgpa.toFixed(2);
+ document.getElementById('details').textContent='Total SGPA: '+total.toFixed(2)+' • Semesters: '+n;
+ document.getElementById('result').style.display='block';
+}
+function resetForm(){renderFields();}
+renderFields();
+</script>
+</body>
+</html>
